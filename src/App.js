@@ -8,7 +8,7 @@ import Todo from "./components/Todo";
 import FormDialogEdit from "./components/FormDialogEdit";
 // Firebase
 import { db } from './firebase.js';
-import { collection, query, orderBy, onSnapshot, addDoc, updateDoc, doc, serverTimestamp } from 'firebase/firestore';
+import { collection, setDoc, query, orderBy, onSnapshot, addDoc, updateDoc, doc, serverTimestamp } from 'firebase/firestore';
 // Styles
 import './App.css';
 // Others
@@ -29,10 +29,37 @@ export default () => {
     })
   }, [inputTitle, inputDescription]);
 
-  const addTodo = (e) => {
+  useEffect(() => {
+    const citiesRef = collection(db, "cities");
+    const data = async () => {
+      await setDoc(doc(citiesRef, "SF"), {
+        name: "San Francisco", state: "CA", country: "USA",
+        capital: false, population: 860000,
+        regions: ["west_coast", "norcal"] });
+      await setDoc(doc(citiesRef, "LA"), {
+        name: "Los Angeles", state: "CA", country: "USA",
+        capital: false, population: 3900000,
+        regions: ["west_coast", "socal"] });
+      await setDoc(doc(citiesRef, "DC"), {
+        name: "Washington, D.C.", state: null, country: "USA",
+        capital: true, population: 680000,
+        regions: ["east_coast"] });
+      await setDoc(doc(citiesRef, "TOK"), {
+        name: "Tokyo", state: null, country: "Japan",
+        capital: true, population: 9000000,
+        regions: ["kanto", "honshu"] });
+      await setDoc(doc(citiesRef, "BJ"), {
+        name: "Beijing", state: null, country: "China",
+        capital: true, population: 21500000,
+        regions: ["jingjinji", "hebei"] });
+    };
+    data();
+  });
+
+  const addTodo = async (e) => {
     e.preventDefault();
-    addDoc(collection(db, "todos"), {
-      id: "todo_" + Math.random(),
+    const citiesRef = collection(db, "todos");
+    await setDoc(doc(citiesRef, "todo_" + Math.random()), {
       title: inputTitle,
       description: inputDescription,
       timestamp: serverTimestamp(),

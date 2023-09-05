@@ -11,7 +11,6 @@ import { doc, deleteDoc } from "firebase/firestore";
 import './Todo.css';
 
 const Todo = ({ arr, onEdit = () => {} }) => {
-
   return (
     <>
       <List className="todo__list">
